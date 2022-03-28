@@ -21,7 +21,6 @@ set -e
 VENDOR=meizu
 DEVICE_COMMON=sdm845
 
-# Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "${MY_DIR}" ]]; then MY_DIR="${PWD}"; fi
 
@@ -34,7 +33,6 @@ if [ ! -f "${HELPER}" ]; then
 fi
 . "${HELPER}"
 
-# Default to sanitizing the vendor folder before extraction
 CLEAN_VENDOR=true
 SECTION=
 KANG=
@@ -59,12 +57,6 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
-
-if [ -z "${DEVICE}" ]; then
-    echo "The device name was not selected!"
-    echo "Use --m1882 (if 16th) or --m1892 (if 16thPlus)!"
-    exit 1
-fi
 
 if [ -z "${SRC}" ]; then
     SRC=adb
@@ -132,16 +124,15 @@ function blob_fixup() {
     esac
 }
 
-# Initialize the helper
-setup_vendor "${DEVICE_COMMON}" "${VENDOR}" "${ANDROID_ROOT}" false "${CLEAN_VENDOR}"
+if [ -z "${DEVICE}" ]; then
+    setup_vendor "${DEVICE_COMMON}" "${VENDOR}" "${ANDROID_ROOT}" false "${CLEAN_VENDOR}"
+    extract "${MY_DIR}/proprietary-files-sdm845.txt" "${SRC}" ${KANG} --section "${SECTION}"
+fi
 
-extract "${MY_DIR}/proprietary-files-sdm845.txt" "${SRC}" ${KANG} --section "${SECTION}"
 
 if [ -n "${DEVICE}" ]; then
-    # Reinitialize the helper for device
     setup_vendor "${DEVICE}" "${VENDOR}" "${ANDROID_ROOT}" false "${CLEAN_VENDOR}"
-
     extract "${MY_DIR}/${DEVICE}/proprietary-files-${DEVICE}.txt" "${SRC}"
 fi
 
-"${MY_DIR}/setup-makefiles.sh" "--${DEVICE}"
+"${MY_DIR}/setup-makefiles.sh" ${DEVICE}

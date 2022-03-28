@@ -21,7 +21,7 @@ set -e
 VENDOR=meizu
 DEVICE_COMMON=sdm845
 
-# Load extract_utils and do some sanity checks
+
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
 
@@ -34,43 +34,18 @@ if [ ! -f "$HELPER" ]; then
 fi
 . "$HELPER"
 
-while [ "$1" != "" ]; do
-    case "$1" in
-        --m1882 )               DEVICE=m1882
-                                ;;
-        --m1892 )               DEVICE=m1892
-                                ;;
-    esac
-    shift
-done
-
-if [ -z "${DEVICE}" ]; then
-    echo "The device name was not selected!"
-    echo "Use --m1882 (if 16th) or --m1892 (if 16thPlus)!"
-    exit 1
+if [ -z "${1}" ];
+then
+    setup_vendor "$DEVICE_COMMON" "$VENDOR" "$ANDROID_ROOT" true
+    write_headers "m1882 m1892"
+    write_makefiles "${MY_DIR}/proprietary-files-sdm845.txt" true
+    write_footers
 fi
 
-# Initialize the helper
-setup_vendor "$DEVICE_COMMON" "$VENDOR" "$ANDROID_ROOT" true
-
-# Copyright headers and guards
-write_headers "m1882 m1892"
-
-write_makefiles "${MY_DIR}/proprietary-files-sdm845.txt" true
-
-# Finish
-write_footers
-
-if [ -n "${DEVICE}" ]; then
-    # Reinitialize the helper for device
-    setup_vendor "${DEVICE}" "${VENDOR}" "${ANDROID_ROOT}" false
-
-      # Copyright headers and guards
+if [ -n "${1}" ];
+then
+    setup_vendor "${1}" "${VENDOR}" "${ANDROID_ROOT}" false
     write_headers
-
-    # The standard device blobs
-    write_makefiles "${MY_DIR}/${DEVICE}/proprietary-files-${DEVICE}.txt" true
-
-    # Finish
+    write_makefiles "${MY_DIR}/${1}/proprietary-files-${1}.txt" true
     write_footers
 fi
