@@ -27,25 +27,17 @@
 
     <!-- Key codes of gestures. If the gesture is not supported set it to 0. -->
     <integer name="config_doubleTapKeyCode">624</integer>
-
     <integer name="config_drawVKeyCode">662</integer>
-
     <integer name="config_drawOKeyCode">660</integer>
-
     <integer name="config_drawMKeyCode">659</integer>
-
     <integer name="config_drawWKeyCode">658</integer>
-
     <integer name="config_drawSKeyCode">661</integer>
-
     <integer name="config_oneFingerSwipeUpKeyCode">642</integer>
-
     <integer name="config_oneFingerSwipeRightKeyCode">641</integer>
-
     <integer name="config_oneFingerSwipeDownKeyCode">643</integer>
-
     <integer name="config_oneFingerSwipeLeftKeyCode">640</integer>
 
+    <!-- KeyHandler to intercept inputs on screen off. -->
     <bool name="config_enableKeyHandler">true</bool>
 
 </resources>

@@ -18,18 +18,8 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Defines the location of the fingerprint sensor on the device
-         0 = back
-         1 = front
-         2 = left side
-         3 = right side
-    -->
-    <integer name="config_fingerprintSensorLocation">1</integer>
-
+    <!-- Fingerprint -->
     <dimen name="fingerprint_dot_radius">11.5dp</dimen>
     <item name="fingerprint_sensor_location_fraction_y" type="fraction">78%</item>
-
-    <!-- Screen off FOD -->
-    <bool name="config_supportScreenOffFod">true</bool>
 
 </resources>
