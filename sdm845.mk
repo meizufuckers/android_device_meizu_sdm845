@@ -67,7 +67,8 @@ PRODUCT_CHARACTERISTICS := nosdcard
 TARGET_COMMON_QTI_COMPONENTS := \
     perf \
     av \
-    telephony
+    telephony \
+    overlay
 
 # Audio
 PRODUCT_PACKAGES += \
