@@ -46,13 +46,5 @@ media.stagefright.thumbnail.prefer_hw_codecs=true
 # Netflix
 ro.netflix.bsp_rev=Q845-14477-1
 
-# NETMGR
-persist.vendor.data.mode=concurrent
-ro.vendor.use_data_netmgrd=true
-
 # RIL
-DEVICE_PROVISIONED=1
 rild.libpath=/vendor/lib64/libril-qc-hal-qmi.so
-ril.subscription.types=NV,RUIM
-ro.telephony.default_network=22,20
-telephony.lteOnCdmaDevice=1

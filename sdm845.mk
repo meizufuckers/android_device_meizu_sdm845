@@ -66,7 +66,8 @@ PRODUCT_CHARACTERISTICS := nosdcard
 # QTI Common
 TARGET_COMMON_QTI_COMPONENTS := \
     perf \
-    av
+    av \
+    telephony
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -161,11 +162,6 @@ PRODUCT_PACKAGES += \
     android.hardware.health@2.1-impl.recovery \
     android.hardware.health@2.1-service
 
-# IMS
-PRODUCT_PACKAGES += \
-    ims-ext-common \
-    ims_ext_common.xml
-
 # HIDL
 PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
@@ -173,11 +169,6 @@ PRODUCT_PACKAGES += \
     libhidltransport.vendor \
     libhwbinder \
     libhwbinder.vendor
-
-# IPA
-PRODUCT_PACKAGES += \
-    ipacm \
-    IPACM_cfg.xml
 
 # IRSC
 PRODUCT_COPY_FILES += \
@@ -248,11 +239,10 @@ PRODUCT_COPY_FILES += \
 
 # Radio
 PRODUCT_PACKAGES += \
-    android.hardware.radio@1.2.vendor \
-    android.hardware.radio.config@1.0.vendor \
+    android.hardware.radio@1.5.vendor \
+    android.hardware.radio.config@1.2.vendor \
     android.hardware.radio.deprecated@1.0.vendor \
-    android.hardware.secure_element@1.0.vendor \
-    libjson \
+    android.hardware.secure_element@1.2.vendor \
     librmnetctl \
     libxml2
 
@@ -272,10 +262,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf
-
-# Telephony
-PRODUCT_PACKAGES += \
-    telephony-ext
 
 # Tethering
 PRODUCT_PACKAGES += \
