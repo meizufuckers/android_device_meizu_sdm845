@@ -264,7 +264,7 @@ typedef struct fingerprint_device {
      * Meizu specific proprietary fingerprint commands for synaptics
      */
     int (*customerHalExtSendCmd)(struct fingerprint_device* dev, int32_t type, int32_t cmd, int);
-    int (*GoodixNotify)(int, int32_t type, int32_t cmd, nullptr_t, int);
+    int (*GoodixNotify)(int, int32_t type, int, nullptr_t, int);
 
     /* Reserved for backward binary compatibility */
     void* reserved[4];

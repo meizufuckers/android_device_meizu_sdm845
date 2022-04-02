@@ -27,7 +27,7 @@
 #include <vendor/goodix/hardware/biometrics/fingerprint/2.1/IGoodixFingerprintDaemon.h>
 #include <vendor/synaptics/fingerprint/interfaces/extensions/1.0/ISteller.h>
 
-#include "fingerprint.h"
+#include "hardware/fingerprint.h"
 
 namespace android {
 namespace hardware {
