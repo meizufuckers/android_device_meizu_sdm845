@@ -30,7 +30,7 @@
 NON-HLOS.bin            /dev/block/platform/soc/1d84000.ufshc/by-name/modem
 BTFM.bin                /dev/block/platform/soc/1d84000.ufshc/by-name/bluetooth
 dspso.bin               /dev/block/platform/soc/1d84000.ufshc/by-name/dsp
-splash.mbn              /dev/block/platform/soc/1d84000.ufshc/by-name/splash
+splash.mbn              /dev/block/platform/soc/1d84000.ufshc/by-name/splash∏
 erf.bin                 /dev/block/platform/soc/1d84000.ufshc/by-name/erf
 
 xbl.elf                 /dev/block/platform/soc/1d84000.ufshc/by-name/xbl

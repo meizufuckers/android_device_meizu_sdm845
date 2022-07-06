@@ -8,8 +8,6 @@ LOCAL_PATH := $(call my-dir)
 
 ifneq ($(filter m1882 m1892,$(TARGET_DEVICE)),)
 
-$(call add-radio-file,radio/filesmap)
-
 $(shell mkdir -p $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
