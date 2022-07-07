@@ -9,22 +9,21 @@
 
 #include "Light.h"
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <fstream>
 
 #define PANEL_BRIGHTNESS_PATH     "/sys/class/backlight/panel0-backlight/brightness"
-#define MX_LED_BLINK_PATH         "/sys/class/leds/breath/blink"
+#define MX_LED_BLINK_PATH         "/sys/class/meizu/mx_leds/leds/breath/blink"
 
-#define LED_OFF 0
-#define LED_BLINK 10
+#define LED_OFF "0"
+#define LED_BLINK "10"
 
-namespace {
-using android::hardware::light::V2_0::LightState;
-
-static constexpr float BRIGHTNESS_MIN = 5;
-static constexpr float BRIGHTNESS_MAX = 1023;
-static constexpr float BRIGHTNESS_RANGE_OLD = 255 - 10;
-static constexpr float BRIGHTNESS_RANGE_NEW = BRIGHTNESS_MAX - BRIGHTNESS_MIN;
+namespace android {
+namespace hardware {
+namespace light {
+namespace V2_0 {
+namespace implementation {
 
 static uint32_t rgbToBrightness(const LightState& state) {
     uint32_t color = state.color & 0x00ffffff;
@@ -34,31 +33,6 @@ static uint32_t rgbToBrightness(const LightState& state) {
 
 static bool isLit(const LightState& state) {
     return (state.color & 0x00ffffff);
-}
-}  // anonymous namespace
-
-namespace android {
-namespace hardware {
-namespace light {
-namespace V2_0 {
-namespace implementation {
-
-/*
- * Write value to path and close file.
- */
-template <typename T>
-static void set(const std::string& path, const T& value) {
-    std::ofstream file(path);
-    file << value;
-}
-
-template <typename T>
-static T get(const std::string& path, const T& def) {
-    std::ifstream file(path);
-    T result;
-
-    file >> result;
-    return file.fail() ? def : result;
 }
 
 Light::Light() {
@@ -105,18 +79,15 @@ void Light::setPanelBacklight(const LightState& state) {
     std::lock_guard<std::mutex> lock(mLock);
 
     uint32_t brightness = rgbToBrightness(state);
-
     int old_brightness = brightness;
 
-    brightness = BRIGHTNESS_MIN + ((float) brightness - 10) /
-            BRIGHTNESS_RANGE_OLD * BRIGHTNESS_RANGE_NEW;
-    if (brightness < BRIGHTNESS_MIN) {
-        brightness = BRIGHTNESS_MIN;
+    brightness = 5 + (brightness - 1.0) / (255 - 1) * (1023 - 5);
+    if (brightness < 5) {
+        brightness = 5;
     }
 
-    LOG(VERBOSE) << "scaling brightness " << old_brightness << " => " << brightness;
-
-    set(PANEL_BRIGHTNESS_PATH, brightness);
+    LOG(VERBOSE) << "Scaling brightness: " << old_brightness << " => " << brightness;
+    android::base::WriteStringToFile(std::to_string(brightness), PANEL_BRIGHTNESS_PATH);
 }
 
 void Light::setNotificationLight(const LightState& state) {
@@ -127,11 +98,11 @@ void Light::setNotificationLight(const LightState& state) {
 
 void Light::setSpeakerBatteryLightLocked() {
     if (isLit(mNotificationState)) {
-        set(MX_LED_BLINK_PATH, LED_BLINK);
+        android::base::WriteStringToFile(LED_BLINK, MX_LED_BLINK_PATH);
     } else if (isLit(mAttentionState)) {
-        set(MX_LED_BLINK_PATH, LED_BLINK);
+        android::base::WriteStringToFile(LED_BLINK, MX_LED_BLINK_PATH);
     } else {
-        set(MX_LED_BLINK_PATH, LED_OFF);
+        android::base::WriteStringToFile(LED_OFF, MX_LED_BLINK_PATH);
     }
 }
 
