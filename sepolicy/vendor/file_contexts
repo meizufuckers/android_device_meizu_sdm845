@@ -16,7 +16,6 @@
 /vendor/bin/hw/android\.hardware\.vibrator@1\.3-service\.meizu_sdm845                              u:object_r:hal_vibrator_default_exec:s0
 /vendor/bin/hw/vendor\.aospa\.power-service\.meizu_sdm845                                          u:object_r:hal_power_default_exec:s0
 /vendor/bin/hw/vendor\.meizu\.hardware\.ifaa@1\.0-service                                          u:object_r:hal_meizu_ifaa_default_exec:s0
-/vendor/bin/hw/vendor\.qti\.memory\.pasrmanager@1\.0-service                                       u:object_r:hal_pasrmanager_memory_default_exec:s0
 
 # KGSL nodes
 /sys/class/kgsl(/.*)?             u:object_r:sysfs_kgsl:s0
@@ -27,7 +26,4 @@
 
 # Power stats nodes
 /sys/bus/iio/devices(/.*)?        u:object_r:sysfs_iio:s0
-
-# Thermal Engine nodesi
-/sys/devices/virtual              u:object_r:sysfs_thermal:s0
 

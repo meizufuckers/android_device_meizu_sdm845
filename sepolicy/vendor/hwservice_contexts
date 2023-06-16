@@ -1,5 +1,4 @@
 com.quicinc.cne.api::IApiService                                     u:object_r:hal_cne_hwservice:s0
 com.quicinc.cne.server::IServer                                      u:object_r:hal_cne_hwservice:s0
 vendor.meizu.hardware.ifaa::IIFAADaemon                              u:object_r:hal_ifaa_hwservice:s0
-vendor.qti.memory.pasrmanager::IPasrManager                          u:object_r:hal_pasrmanager_memory_hwservice:s0
 vendor.synaptics.fingerprint.interfaces.extensions::ISteller         u:object_r:hal_fingerprint_hwservice:s0
