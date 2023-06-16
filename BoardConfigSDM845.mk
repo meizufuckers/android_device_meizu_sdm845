@@ -1,6 +1,6 @@
 # Path
 COMMON_PATH := device/meizu/sdm845
-KERNEL_PATH := $(COMMON_PATH)/kernel
+KERNEL_PATH := device/meizu/kernel
 
 # Build
 BUILD_BROKEN_DUP_RULES := true
@@ -163,9 +163,7 @@ BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 BOARD_PLAT_PUBLIC_SEPOLICY_DIR += $(COMMON_PATH)/sepolicy/public
 
 # Soong namespaces
-PRODUCT_SOONG_NAMESPACES += \
-    $(COMMON_PATH) \
-    $(KERNEL_PATH)
+PRODUCT_SOONG_NAMESPACES += $(COMMON_PATH)
 
 # Timeservice
 BOARD_USES_QC_TIME_SERVICES := true
