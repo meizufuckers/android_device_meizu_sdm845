@@ -1,4 +1,10 @@
-# Path
+#
+# Copyright (C) 2023 transaero21 <transaero21@elseboot.ru>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Alias
 COMMON_PATH := device/meizu/sdm845
 KERNEL_PATH := device/meizu/kernel
 
@@ -47,7 +53,6 @@ BOARD_KERNEL_CMDLINE := \
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_TAGS_OFFSET := 0x00000100
 BOARD_RAMDISK_OFFSET := 0x01000000
-TARGET_IGNORE_KERNEL_DEFINITIONS := true
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_COMPILE_WITH_MSM_KERNEL := false
 
