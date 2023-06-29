@@ -1,17 +1,10 @@
+#
 # Copyright (C) 2009 The Android Open Source Project
-# Copyright (c) 2011-2013, 2020 The Linux Foundation. All rights reserved.
+# Copyright (c) 2011-2013, 2020 The Linux Foundation.
+# Copyright (C) 2023 transaero21 <transaero21@elseboot.ru>
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# SPDX-License-Identifier: Apache-2.0
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 """Emit commands needed for QCOM devices during OTA installation
 (installing the radio image)."""
@@ -38,18 +31,18 @@ USERIMAGE_PARTITIONS = [] # Empty
 # Parse filesmap file containing firmware residing places
 def LoadFilesMap(zip, name="RADIO/filesmap"):
   try:
-    data = zip.read(name)
+    data = zip.read(name).decode()
   except KeyError:
-    print "Warning: could not find %s in %s." % (name, zip)
+    print("Warning: could not find %s in %s." % (name, zip))
     data = ""
   d = {}
-  for line in data.split("\n"):
+  for line in data.splitlines():
     line = line.strip()
     if not line or line.startswith("#"):
       continue
     pieces = line.split()
     if not (len(pieces) == 2):
-      raise ValueError("malformed filesmap line: \"%s\"" % (line,))
+      raise ValueError("malformed filesmap line: \"%s\"" % (line))
     d[pieces[0]] = pieces[1]
   return d
 
@@ -97,7 +90,7 @@ def GetFileDestination(fn, filesmap):
   if fn not in filesmap:
     fn = fn.split(".")[0] + ".*"
     if fn not in filesmap:
-      print "warning radio-update: '%s' not found in filesmap" % (fn)
+      print("warning radio-update: '%s' not found in filesmap" % (fn))
       return None, backup
   return filesmap[fn], backup
 
@@ -128,30 +121,30 @@ def SplitFwTypes(files):
 # Prepare radio-update files and verify them
 def OTA_VerifyEnd(info, api_version, target_zip, source_zip=None):
   if api_version < 3:
-    print "warning radio-update: no support for api_version less than 3"
+    print("warning radio-update: no support for api_version less than 3")
     return False
 
-  print "Loading radio filesmap..."
+  print("Loading radio filesmap...")
   filesmap = LoadFilesMap(target_zip)
   if filesmap == {}:
-    print "warning radio-update: no or invalid filesmap file found"
+    print("warning radio-update: no or invalid filesmap file found")
     return False
 
-  print "Loading radio target..."
+  print("Loading radio target...")
   tgt_files = GetRadioFiles(target_zip)
   if tgt_files == {}:
-    print "warning radio-update: no radio images in input target_files"
+    print("warning radio-update: no radio images in input target_files")
     return False
 
   src_files = None
   if source_zip is not None:
-    print "Loading radio source..."
+    print("Loading radio source...")
     src_files = GetRadioFiles(source_zip)
 
   update_list = {}
   largest_source_size = 0
 
-  print "Preparing radio-update files..."
+  print("Preparing radio-update files...")
   for fn in tgt_files:
     dest, destBak = GetFileDestination(fn, filesmap)
     if dest is None:
@@ -347,7 +340,7 @@ def InstallFwImages(script, files):
 
 
 def OTA_InstallEnd(info):
-  print "Applying radio-update script modifications..."
+  print("Applying radio-update script modifications...")
   info.script.Comment("---- radio update tasks ----")
   info.script.Print("Patching firmware images...")
 
@@ -367,7 +360,7 @@ def FullOTA_InstallEnd_MMC(info):
 
 
 def FullOTA_InstallEnd_MTD(info):
-  print "warning radio-update: radio update for NAND devices not supported"
+  print("warning radio-update: radio update for NAND devices not supported")
   return
 
 
@@ -381,7 +374,7 @@ def IncrementalOTA_InstallEnd_MMC(info):
 
 
 def IncrementalOTA_InstallEnd_MTD(info):
-  print "warning radio-update: radio update for NAND devices not supported"
+  print("warning radio-update: radio update for NAND devices not supported")
   return
 
 def IncrementalOTA_InstallEnd(info):
