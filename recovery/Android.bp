@@ -1,0 +1,12 @@
+//
+// Copyright (C) 2023 transaero21 <transaero21@elseboot.ru>
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_library_static {
+    name: "librecovery_updater_meizu",
+    recovery_available: true,
+    srcs: ["meizu_updater.cpp"],
+    static_libs: ["libedify", "libotautil"]
+}

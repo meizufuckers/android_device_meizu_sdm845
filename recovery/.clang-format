@@ -1,1 +1,1 @@
-../../../../bootable/recovery/.clang-format
+../../../../build/soong/scripts/system-clang-format

@@ -232,17 +232,17 @@ def OTA_VerifyEnd(info, api_version, target_zip, source_zip=None):
 
 
 def FullOTA_Assertions(info):
-  AddClearMeizuRoot(info)
+  AddMeizuClearRoot(info.script)
   return
 
 
 def IncrementalOTA_Assertions(info):
-  AddClearMeizuRoot(info)
+  AddMeizuClearRoot(info.script)
   return
 
 
-def AddClearMeizuRoot(info):
-  info.script.AppendExtra('meizu_sdm845.clear_mz_root();')
+def AddMeizuClearRoot(script):
+  script.AppendExtra('ifelse(meizu.get_root_state(), meizu.clear_root(), "");')
   return
 
 def IncrementalOTA_VerifyEnd(info):
