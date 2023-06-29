@@ -231,12 +231,12 @@ def OTA_VerifyEnd(info, api_version, target_zip, source_zip=None):
   return True
 
 
-def FullOTA_Assertions(info):
+def FullOTA_InstallBegin(info):
   AddMeizuClearRoot(info.script)
   return
 
 
-def IncrementalOTA_Assertions(info):
+def IncrementalOTA_InstallBegin(info):
   AddMeizuClearRoot(info.script)
   return
 
