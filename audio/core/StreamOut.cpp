@@ -637,12 +637,8 @@ Result StreamOut::doUpdateSourceMetadataV7(const SourceMetadata& sourceMetadata)
 #endif  //  MAJOR_VERSION >= 7
 
 #if MAJOR_VERSION <= 6
-Return<void> StreamOut::updateSourceMetadata(const SourceMetadata& sourceMetadata) {
-    if (mStream->update_source_metadata == nullptr) {
-        return Void();  // not supported by the HAL
-    }
-    (void)doUpdateSourceMetadata(sourceMetadata);
-    return Void();
+Return<void> StreamOut::updateSourceMetadata(const SourceMetadata&) {
+    return Void(); // not supported by the HAL
 }
 #elif MAJOR_VERSION >= 7
 Return<Result> StreamOut::updateSourceMetadata(const SourceMetadata& sourceMetadata) {
@@ -728,13 +724,8 @@ Return<Result> StreamOut::setPlaybackRateParameters(const PlaybackRate& playback
                    : Result::NOT_SUPPORTED;
 }
 
-Return<Result> StreamOut::setEventCallback(const sp<IStreamOutEventCallback>& callback) {
-    if (mStream->set_event_callback == nullptr) return Result::NOT_SUPPORTED;
-    int result = mStream->set_event_callback(mStream, StreamOut::asyncEventCallback, this);
-    if (result == 0) {
-        mEventCallback = callback;
-    }
-    return Stream::analyzeStatus("set_stream_out_callback", result, {ENOSYS} /*ignore*/);
+Return<Result> StreamOut::setEventCallback(const sp<IStreamOutEventCallback>&) {
+    return Result::NOT_SUPPORTED; // not supported by the HAL
 }
 
 // static

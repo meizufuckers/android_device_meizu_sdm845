@@ -548,50 +548,19 @@ Return<Result> StreamIn::updateSinkMetadata(const SinkMetadata& sinkMetadata) {
 #endif
 
 Return<void> StreamIn::getActiveMicrophones(getActiveMicrophones_cb _hidl_cb) {
-    Result retval = Result::NOT_SUPPORTED;
-    size_t actual_mics = AUDIO_MICROPHONE_MAX_COUNT;
-    audio_microphone_characteristic_t mic_array[AUDIO_MICROPHONE_MAX_COUNT];
-
     hidl_vec<MicrophoneInfo> microphones;
-    if (mStream->get_active_microphones != NULL &&
-        mStream->get_active_microphones(mStream, &mic_array[0], &actual_mics) == 0) {
-        microphones.resize(actual_mics);
-        for (size_t i = 0; i < actual_mics; ++i) {
-            (void)CoreUtils::microphoneInfoFromHal(mic_array[i], &microphones[i]);
-        }
-        retval = Result::OK;
-    }
-
-    _hidl_cb(retval, microphones);
+    _hidl_cb(Result::NOT_SUPPORTED, microphones); // not supported by the HAL
     return Void();
 }
 #endif
 
 #if MAJOR_VERSION >= 5
-Return<Result> StreamIn::setMicrophoneDirection(MicrophoneDirection direction) {
-    if (mStream->set_microphone_direction == nullptr) {
-        return Result::NOT_SUPPORTED;
-    }
-    if (!common::utils::isValidHidlEnum(direction)) {
-        ALOGE("%s: Invalid direction %d", __func__, direction);
-        return Result::INVALID_ARGUMENTS;
-    }
-    return Stream::analyzeStatus(
-            "set_microphone_direction",
-            mStream->set_microphone_direction(
-                    mStream, static_cast<audio_microphone_direction_t>(direction)));
+Return<Result> StreamIn::setMicrophoneDirection(MicrophoneDirection) {
+    return Result::NOT_SUPPORTED; // not supported by the HAL
 }
 
-Return<Result> StreamIn::setMicrophoneFieldDimension(float zoom) {
-    if (mStream->set_microphone_field_dimension == nullptr) {
-        return Result::NOT_SUPPORTED;
-    }
-    if (std::isnan(zoom) || zoom < -1 || zoom > 1) {
-        ALOGE("%s: Invalid zoom %f", __func__, zoom);
-        return Result::INVALID_ARGUMENTS;
-    }
-    return Stream::analyzeStatus("set_microphone_field_dimension",
-                                 mStream->set_microphone_field_dimension(mStream, zoom));
+Return<Result> StreamIn::setMicrophoneFieldDimension(float) {
+    return Result::NOT_SUPPORTED; // not supported by the HAL
 }
 
 #endif
