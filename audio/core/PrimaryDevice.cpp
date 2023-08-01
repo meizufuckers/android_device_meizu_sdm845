@@ -16,8 +16,8 @@
 
 #define LOG_TAG "PrimaryDeviceHAL"
 
-#include "core/default/PrimaryDevice.h"
-#include "core/default/Util.h"
+#include "PrimaryDevice.h"
+#include "Util.h"
 
 #if MAJOR_VERSION >= 4
 #include <cmath>
@@ -28,6 +28,10 @@ namespace hardware {
 namespace audio {
 namespace CPP_VERSION {
 namespace implementation {
+
+namespace util {
+using namespace ::android::hardware::audio::CORE_TYPES_CPP_VERSION::implementation::util;
+}
 
 PrimaryDevice::PrimaryDevice(audio_hw_device_t* device) : mDevice(new Device(device)) {}
 
@@ -195,7 +199,7 @@ Return<void> PrimaryDevice::updateAudioPatch(int32_t previousPatch,
 
 // Methods from ::android::hardware::audio::CPP_VERSION::IPrimaryDevice follow.
 Return<Result> PrimaryDevice::setVoiceVolume(float volume) {
-    if (!isGainNormalized(volume)) {
+    if (!util::isGainNormalized(volume)) {
         ALOGW("Can not set a voice volume (%f) outside [0,1]", volume);
         return Result::INVALID_ARGUMENTS;
     }
@@ -326,7 +330,7 @@ Return<Result> PrimaryDevice::setBtHfpSampleRate(uint32_t sampleRateHz) {
     return mDevice->setParam(AUDIO_PARAMETER_KEY_HFP_SET_SAMPLING_RATE, int(sampleRateHz));
 }
 Return<Result> PrimaryDevice::setBtHfpVolume(float volume) {
-    if (!isGainNormalized(volume)) {
+    if (!util::isGainNormalized(volume)) {
         ALOGW("Can not set BT HFP volume (%f) outside [0,1]", volume);
         return Result::INVALID_ARGUMENTS;
     }

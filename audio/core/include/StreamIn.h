@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_HARDWARE_AUDIO_STREAMOUT_H
-#define ANDROID_HARDWARE_AUDIO_STREAMOUT_H
+#ifndef ANDROID_HARDWARE_AUDIO_STREAMIN_H
+#define ANDROID_HARDWARE_AUDIO_STREAMIN_H
 
-#include PATH(android/hardware/audio/FILE_VERSION/IStreamOut.h)
+// clang-format off
+#include PATH(android/hardware/audio/CORE_TYPES_FILE_VERSION/IStreamIn.h)
+// clang-format on
 
 #include "Device.h"
 #include "Stream.h"
@@ -29,7 +31,6 @@
 #include <fmq/MessageQueue.h>
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
-#include <mediautils/Synchronization.h>
 #include <utils/Thread.h>
 
 namespace android {
@@ -43,15 +44,16 @@ using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
-using namespace ::android::hardware::audio::common::CPP_VERSION;
+using namespace ::android::hardware::audio::common::COMMON_TYPES_CPP_VERSION;
+using namespace ::android::hardware::audio::CORE_TYPES_CPP_VERSION;
 using namespace ::android::hardware::audio::CPP_VERSION;
 
-struct StreamOut : public IStreamOut {
-    typedef MessageQueue<WriteCommand, kSynchronizedReadWrite> CommandMQ;
+struct StreamIn : public IStreamIn {
+    typedef MessageQueue<ReadParameters, kSynchronizedReadWrite> CommandMQ;
     typedef MessageQueue<uint8_t, kSynchronizedReadWrite> DataMQ;
-    typedef MessageQueue<WriteStatus, kSynchronizedReadWrite> StatusMQ;
+    typedef MessageQueue<ReadStatus, kSynchronizedReadWrite> StatusMQ;
 
-    StreamOut(const sp<Device>& device, audio_stream_out_t* stream);
+    StreamIn(const sp<Device>& device, audio_stream_in_t* stream);
 
     // Methods from ::android::hardware::audio::CPP_VERSION::IStream follow.
     Return<uint64_t> getFrameSize() override;
@@ -103,80 +105,52 @@ struct StreamOut : public IStreamOut {
     Return<void> debugDump(const hidl_handle& fd) override;
 #endif
 
-    // Methods from ::android::hardware::audio::CPP_VERSION::IStreamOut follow.
-    Return<uint32_t> getLatency() override;
-    Return<Result> setVolume(float left, float right) override;
-    Return<void> prepareForWriting(uint32_t frameSize, uint32_t framesCount,
-                                   prepareForWriting_cb _hidl_cb) override;
-    Return<void> getRenderPosition(getRenderPosition_cb _hidl_cb) override;
-    Return<void> getNextWriteTimestamp(getNextWriteTimestamp_cb _hidl_cb) override;
-    Return<Result> setCallback(const sp<IStreamOutCallback>& callback) override;
-    Return<Result> clearCallback() override;
-    Return<void> supportsPauseAndResume(supportsPauseAndResume_cb _hidl_cb) override;
-    Return<Result> pause() override;
-    Return<Result> resume() override;
-    Return<bool> supportsDrain() override;
-    Return<Result> drain(AudioDrain type) override;
-    Return<Result> flush() override;
-    Return<void> getPresentationPosition(getPresentationPosition_cb _hidl_cb) override;
+    // Methods from ::android::hardware::audio::CPP_VERSION::IStreamIn follow.
+    Return<void> getAudioSource(getAudioSource_cb _hidl_cb) override;
+    Return<Result> setGain(float gain) override;
+    Return<void> prepareForReading(uint32_t frameSize, uint32_t framesCount,
+                                   prepareForReading_cb _hidl_cb) override;
+    Return<uint32_t> getInputFramesLost() override;
+    Return<void> getCapturePosition(getCapturePosition_cb _hidl_cb) override;
     Return<Result> start() override;
     Return<Result> stop() override;
     Return<void> createMmapBuffer(int32_t minSizeFrames, createMmapBuffer_cb _hidl_cb) override;
     Return<void> getMmapPosition(getMmapPosition_cb _hidl_cb) override;
 #if MAJOR_VERSION >= 4
-    Return<Result> selectPresentation(int32_t presentationId, int32_t programId) override;
 #if MAJOR_VERSION <= 6
-    Return<void> updateSourceMetadata(const SourceMetadata& sourceMetadata) override;
+    Return<void> updateSinkMetadata(const SinkMetadata& sinkMetadata) override;
 #else
-    Return<Result> updateSourceMetadata(const SourceMetadata& sourceMetadata) override;
+    Return<Result> updateSinkMetadata(const SinkMetadata& sinkMetadata) override;
 #endif
+    Return<void> getActiveMicrophones(getActiveMicrophones_cb _hidl_cb) override;
 #endif  // MAJOR_VERSION >= 4
-#if MAJOR_VERSION >= 6
-    Return<void> getDualMonoMode(getDualMonoMode_cb _hidl_cb) override;
-    Return<Result> setDualMonoMode(DualMonoMode mode) override;
-    Return<void> getAudioDescriptionMixLevel(getAudioDescriptionMixLevel_cb _hidl_cb) override;
-    Return<Result> setAudioDescriptionMixLevel(float leveldB) override;
-    Return<void> getPlaybackRateParameters(getPlaybackRateParameters_cb _hidl_cb) override;
-    Return<Result> setPlaybackRateParameters(const PlaybackRate& playbackRate) override;
+#if MAJOR_VERSION >= 5
+    Return<Result> setMicrophoneDirection(MicrophoneDirection direction) override;
+    Return<Result> setMicrophoneFieldDimension(float zoom) override;
 #endif
-
-    static Result getPresentationPositionImpl(audio_stream_out_t* stream, uint64_t* frames,
-                                              TimeSpec* timeStamp);
-
-#if MAJOR_VERSION >= 6
-    Return<Result> setEventCallback(const sp<IStreamOutEventCallback>& callback) override;
-#endif
+    static Result getCapturePositionImpl(audio_stream_in_t* stream, uint64_t* frames,
+                                         uint64_t* time);
 
   private:
 #if MAJOR_VERSION >= 4
-    Result doUpdateSourceMetadata(const SourceMetadata& sourceMetadata);
+    Result doUpdateSinkMetadata(const SinkMetadata& sinkMetadata);
 #if MAJOR_VERSION >= 7
-    Result doUpdateSourceMetadataV7(const SourceMetadata& sourceMetadata);
+    Result doUpdateSinkMetadataV7(const SinkMetadata& sinkMetadata);
 #endif
 #endif  // MAJOR_VERSION >= 4
 
     const sp<Device> mDevice;
-    audio_stream_out_t* mStream;
+    audio_stream_in_t* mStream;
     const sp<Stream> mStreamCommon;
-    const sp<StreamMmap<audio_stream_out_t>> mStreamMmap;
-    mediautils::atomic_sp<IStreamOutCallback> mCallback;  // for non-blocking write and drain
-#if MAJOR_VERSION >= 6
-    mediautils::atomic_sp<IStreamOutEventCallback> mEventCallback;
-#endif
+    const sp<StreamMmap<audio_stream_in_t>> mStreamMmap;
     std::unique_ptr<CommandMQ> mCommandMQ;
     std::unique_ptr<DataMQ> mDataMQ;
     std::unique_ptr<StatusMQ> mStatusMQ;
     EventFlag* mEfGroup;
-    std::atomic<bool> mStopWriteThread;
-    sp<Thread> mWriteThread;
+    std::atomic<bool> mStopReadThread;
+    sp<Thread> mReadThread;
 
-    virtual ~StreamOut();
-
-    static int asyncCallback(stream_callback_event_t event, void* param, void* cookie);
-
-#if MAJOR_VERSION >= 6
-    static int asyncEventCallback(stream_event_callback_type_t event, void* param, void* cookie);
-#endif
+    virtual ~StreamIn();
 };
 
 }  // namespace implementation
@@ -185,4 +159,4 @@ struct StreamOut : public IStreamOut {
 }  // namespace hardware
 }  // namespace android
 
-#endif  // ANDROID_HARDWARE_AUDIO_STREAMOUT_H
+#endif  // ANDROID_HARDWARE_AUDIO_STREAMIN_H
